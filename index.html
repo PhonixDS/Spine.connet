@@ -1,451 +1,431 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Back Mapping Device</title>
-<style>
-  :root {
-    --bg: #f0f2f5;
-    --card: #fff;
-    --text: #333;
-    --muted: #666;
-    --ok: #28a745;
-    --bad: #dc3545;
-    --accent: #007bff;
-    --input-bg: #f7f7f7;
-  }
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-  }
-  .wrap {
-    max-width: 1100px;
-    margin: 10px auto;
-    padding: 0 10px;
-  }
-  .controls {
-    background: var(--card);
-    padding: 10px;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.08);
-    margin-bottom: 10px;
-  }
-  .top {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  .title {
-    font-weight: 700;
-  }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-    gap: 8px;
-  }
-  button, .ip-input {
-    padding: 10px;
-    border: none;
-    border-radius: 10px;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
-    transition: .15s transform, .15s box-shadow;
-  }
-  button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 3px 6px rgba(0,0,0,.2);
-  }
-  .b-dark { background: #343a40; }
-  .b-green { background: #28a745; }
-  .b-red { background: #dc3545; }
-  .b-orange { background: #fd7e14; }
-  .b-purple { background: #6f42c1; }
-  .b-yellow { background: #ffc107; color: #000; }
-  .b-blue { background: #007bff; }
-  .ip-input {
-    color: var(--text);
-    background: var(--input-bg);
-    padding: 10px;
-    font-weight: normal;
-  }
-  .card {
-    background: var(--card);
-    padding: 12px;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.12);
-  }
-  #plotWrap {
-    position: relative;
-  }
-  #status {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(255,255,255,.9);
-    padding: 6px 10px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    box-shadow: 0 1px 4px rgba(0,0,0,.1);
-  }
-  .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-  }
-  .online { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
-  .offline { background: var(--bad); box-shadow: 0 0 6px var(--bad); }
-  #canvas {
-    width: 100%;
-    height: 600px;
-    border-radius: 12px;
-    background: #fafafa;
-    display: block;
-  }
-  .muted {
-    color: var(--muted);
-    font-size: 12px;
-  }
-  .dark {
-    --bg: #1e1e1e;
-    --card: #2c2c2c;
-    --text: #ddd;
-    --muted: #aaa;
-    --input-bg: #3c3c3c;
-  }
-  .dark #status {
-    background: rgba(50,50,50,.9);
-    color: #eee;
-  }
-  .legend {
-    display: flex;
-    gap: 16px;
-    margin-top: 8px;
-    color: var(--muted);
-    font-size: 13px;
-  }
-  /* New Styles for Landing Page */
-  #landing-page {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    text-align: center;
-  }
-  #landing-page .title {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-  }
-  #start-button {
-    font-size: 1.25rem;
-    padding: 15px 30px;
-    box-shadow: 0 4px 8px rgba(0,0,0,.2);
-    background: var(--accent);
-    color: #fff;
-  }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Back Mapping Device</title>
+  <style>
+    :root {
+      --bg: #f0f2f5;
+      --card: #fff;
+      --text: #333;
+      --muted: #666;
+      --ok: #28a745;
+      --bad: #dc3545;
+      --accent: #007bff;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 10px auto;
+      padding: 0 10px;
+    }
+
+    .controls {
+      background: var(--card);
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+      margin-bottom: 10px;
+    }
+
+    .top {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px
+    }
+
+    .title {
+      font-weight: 700
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px
+    }
+
+    button {
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .15s transform, .15s box-shadow
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 3px 6px rgba(0, 0, 0, .2)
+    }
+
+    .b-dark {
+      background: #343a40
+    }
+
+    .b-green {
+      background: #28a745
+    }
+
+    .b-red {
+      background: #dc3545
+    }
+
+    .b-orange {
+      background: #fd7e14
+    }
+
+    .b-purple {
+      background: #6f42c1
+    }
+
+    .b-yellow {
+      background: #ffc107;
+      color: #000
+    }
+
+    .b-blue {
+      background: #007bff
+    }
+
+    .card {
+      background: var(--card);
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .12)
+    }
+
+    #plotWrap {
+      position: relative
+    }
+
+    #status {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: rgba(255, 255, 255, .9);
+      padding: 6px 10px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .1)
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%
+    }
+
+    .online {
+      background: var(--ok);
+      box-shadow: 0 0 6px var(--ok)
+    }
+
+    .offline {
+      background: var(--bad);
+      box-shadow: 0 0 6px var(--bad)
+    }
+
+    #canvas {
+      width: 100%;
+      height: 600px;
+      border-radius: 12px;
+      background: #fafafa;
+      display: block
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 12px
+    }
+
+    .dark {
+      --bg: #1e1e1e;
+      --card: #2c2c2c;
+      --text: #ddd;
+      --muted: #aaa
+    }
+
+    .dark #status {
+      background: rgba(50, 50, 50, .9);
+      color: #eee
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px
+    }
+  </style>
 </head>
 <body>
-
-<!-- Landing Page Section -->
-<div id="landing-page">
-  <div class="title">Back Mapping Device</div>
-  <button id="start-button">Start Spine.Connect</button>
-</div>
-
-<!-- Main Application Section (Initially Hidden) -->
-<div id="app-page" style="display:none;">
-<div class="wrap">
-  <div class="controls card">
-    <div class="top">
-      <div class="title">Back Mapping Device</div>
-      <button id="mode" class="b-dark">🌙 Dark Mode</button>
+  <div class="wrap">
+    <div class="controls card">
+      <div class="top">
+        <div class="title">Back Mapping Device</div>
+        <button id="mode" class="b-dark">🌙 Dark Mode</button>
+      </div>
+      <div class="grid">
+        <button id="start" class="b-green">Start</button>
+        <button id="stop" class="b-red">Stop</button>
+        <button id="toggleVals" class="b-orange">Measurement Toggle</button>
+        <button id="toggleAngles" class="b-purple">Show Angles</button>
+        <button id="exportImg" class="b-yellow">Report Image</button>
+        <button id="toggleLabels" class="b-blue">Toggle Sensor Labels</button>
+      </div>
+      <div class="ip-controls" style="margin-top: 10px;">
+        <input type="text" id="ipInput" placeholder="Enter IP Address">
+        <button id="connectBtn" class="b-blue">Connect</button>
+      </div>
     </div>
-    <div style="margin-bottom: 10px;">
-      <input type="text" id="ipAddress" class="ip-input" placeholder="Enter ESP32 IP Address (e.g., 192.168.1.123)">
-      <button id="connectBtn" class="b-blue">Connect</button>
-    </div>
-    <div class="grid">
-      <button id="start" class="b-green">Start</button>
-      <button id="stop" class="b-red">Stop</button>
-      <button id="toggleVals" class="b-orange">Measurement Toggle</button>
-      <button id="toggleAngles" class="b-purple">Show Angles</button>
-      <button id="exportImg" class="b-yellow">Report Image</button>
-      <button id="toggleLabels" class="b-blue">Toggle Sensor Labels</button>
-    </div>
-  </div>
-  <div class="card" id="plotWrap">
-    <div id="status"><div id="dot" class="dot offline"></div><div id="stxt">Offline</div><div id="dt" style="margin-left:12px;font-weight:700"></div></div>
-    <canvas id="canvas" width="1000" height="600" aria-label="Back mapping spine plot"></canvas>
-    <div class="legend">
-      <div>Line = spine profile • markers = sensor points</div>
-      <div class="muted">S1 is top • S8 is bottom</div>
+    <div class="card" id="plotWrap">
+      <div id="status"><div id="dot" class="dot offline"></div><div id="stxt">Offline</div><div id="dt" style="margin-left:12px;font-weight:700"></div></div>
+      <canvas id="canvas" width="1000" height="600" aria-label="Back mapping spine plot"></canvas>
+      <div class="legend">
+        <div>Line = spine profile • markers = sensor points</div>
+        <div class="muted">S1 is top • S8 is bottom</div>
+      </div>
     </div>
   </div>
-</div>
-</div>
 
-<script>
-(function(){
-  // ---- UI state ----
-  const landingPage = document.getElementById('landing-page');
-  const appPage = document.getElementById('app-page');
-  const startButton = document.getElementById('start-button');
-  const cv = document.getElementById('canvas');
-  const ctx = cv.getContext('2d');
-  const ipInput = document.getElementById('ipAddress');
-  const connectBtn = document.getElementById('connectBtn');
-  const startBtn = document.getElementById('start');
-  const stopBtn = document.getElementById('stop');
-  const tValsBtn = document.getElementById('toggleVals');
-  const tAngBtn = document.getElementById('toggleAngles');
-  const tLabBtn = document.getElementById('toggleLabels');
-  const exportBtn = document.getElementById('exportImg');
-  const modeBtn = document.getElementById('mode');
-  const dot = document.getElementById('dot');
-  const stxt = document.getElementById('stxt');
-  const dt = document.getElementById('dt');
+  <script>
+    (function() {
+      // ---- UI state ----
+      const cv = document.getElementById('canvas');
+      const ctx = cv.getContext('2d');
+      const startBtn = document.getElementById('start');
+      const stopBtn = document.getElementById('stop');
+      const tValsBtn = document.getElementById('toggleVals');
+      const tAngBtn = document.getElementById('toggleAngles');
+      const tLabBtn = document.getElementById('toggleLabels');
+      const exportBtn = document.getElementById('exportImg');
+      const modeBtn = document.getElementById('mode');
+      const connectBtn = document.getElementById('connectBtn'); // New button
+      const ipInput = document.getElementById('ipInput'); // New input
+      const dot = document.getElementById('dot');
+      const stxt = document.getElementById('stxt');
+      const dt = document.getElementById('dt');
 
-  let showVals = false, showAngles = false, showLabels = true, running = true;
-  let ws = null, online = false;
-  let data = Array(8).fill(-1); // cm
-  const labels = ["S1","S2","S3","S4","S5","S6","S7","S8"];
+      let showVals = false,
+        showAngles = false,
+        showLabels = true,
+        running = true;
+      let ws = null,
+        online = false;
+      let data = Array(8).fill(-1); // cm
+      const labels = ["S1", "S2", "S3", "S4", "S5", "S6", "S7", "S8"];
 
-  // Load saved IP address from local storage
-  const savedIp = localStorage.getItem('esp32_ip');
-  if (savedIp) {
-    ipInput.value = savedIp;
-  }
-
-  function fitCanvas(){
-    const w = cv.parentElement.clientWidth;
-    cv.width = Math.max(600, w);
-    cv.height = Math.round(cv.width * 0.6);
-    draw();
-  }
-  window.addEventListener('resize', fitCanvas);
-
-  function setOnline(v){
-    online = v;
-    dot.className = 'dot ' + (v ? 'online' : 'offline');
-    stxt.textContent = v ? 'Online' : 'Offline';
-    if (v) {
-      connectBtn.textContent = 'Connected';
-      connectBtn.disabled = true;
-      connectBtn.style.background = 'var(--ok)';
-    } else {
-      connectBtn.textContent = 'Connect';
-      connectBtn.disabled = false;
-      connectBtn.style.background = 'var(--blue)';
-    }
-  }
-  setInterval(() => { dt.textContent = new Date().toLocaleString(); }, 1000);
-
-  function angles(arr){
-    const ang = Array(arr.length).fill(null);
-    for(let i = 1; i < arr.length - 1; i++){
-      if (arr[i-1] < 0 || arr[i] < 0 || arr[i+1] < 0) {
-        ang[i] = null;
-        continue;
+      function fitCanvas() {
+        const w = cv.parentElement.clientWidth;
+        cv.width = Math.max(600, w);
+        cv.height = Math.round(cv.width * 0.6);
+        draw();
       }
-      const ax = arr[i+1] - arr[i], ay = 1;
-      const bx = arr[i-1] - arr[i], by = -1;
-      const a = Math.atan2(ay, ax), b = Math.atan2(by, bx);
-      let deg = (a-b) * 180 / Math.PI;
-      if (deg > 180) deg -= 360;
-      if (deg < -180) deg += 360;
-      ang[i] = deg.toFixed(1) + '°';
-    }
-    return ang;
-  }
+      window.addEventListener('resize', fitCanvas);
 
-  function draw(){
-    const W = cv.width, H = cv.height;
-    ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg');
-    ctx.fillRect(0, 0, W, H);
-
-    const P = { l: 70, r: 30, t: 40, b: 40 }, x0 = P.l, x1 = W - P.r, y0 = P.t, y1 = H - P.b;
-
-    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--card');
-    ctx.fillRect(x0 - 10, y0 - 10, (x1 - x0) + 20, (y1 - y0) + 20);
-
-    ctx.strokeStyle = '#bbb';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    for(let i = 0; i < 8; i++){
-      const y = y0 + i * (y1 - y0) / 7;
-      ctx.moveTo(x0, y);
-      ctx.lineTo(x1, y);
-    }
-    ctx.stroke();
-
-    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
-    ctx.font = '12px system-ui,Arial';
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    for(let i = 0; i < 8; i++){
-      const y = y0 + i * (y1 - y0) / 7;
-      ctx.fillText(showLabels ? labels[i] : '', x0 - 12, y);
-    }
-
-    const valid = data.filter(v => v >= 0);
-    const min = valid.length ? Math.min(...valid, 0) : 0;
-    const max = valid.length ? Math.max(...valid, 100) : 100;
-    const xMin = Math.max(0, Math.floor(min - 10));
-    const xMax = Math.ceil(max + 10);
-    const X = v => x0 + (v - xMin) * (x1 - x0) / ((xMax - xMin) || 1);
-    const Y = i => y0 + i * (y1 - y0) / 7;
-
-    // curve
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#007bff';
-    ctx.beginPath();
-    for(let i = 0; i < 8; i++){
-      const xx = (data[i] >= 0) ? X(data[i]) : X(0);
-      const yy = Y(i);
-      if(i === 0) ctx.moveTo(xx, yy);
-      else{
-        const px = (data[i-1] >= 0) ? X(data[i-1]) : X(0);
-        const py = Y(i-1);
-        const mx = (px + xx) / 2;
-        ctx.quadraticCurveTo(px, py, mx, (py + yy) / 2);
-        ctx.quadraticCurveTo(mx, (py + yy) / 2, xx, yy);
+      function setOnline(v) {
+        online = v;
+        dot.className = 'dot ' + (v ? 'online' : 'offline');
+        stxt.textContent = v ? 'Online' : 'Offline';
       }
-    }
-    ctx.stroke();
+      setInterval(() => {
+        dt.textContent = new Date().toLocaleString();
+      }, 1000);
 
-    for(let i = 0; i < 8; i++){
-      const xx = (data[i] >= 0) ? X(data[i]) : X(0);
-      const yy = Y(i);
-      ctx.fillStyle = (data[i] >= 0) ? '#dc3545' : '#999';
-      ctx.beginPath();
-      ctx.arc(xx, yy, 6, 0, Math.PI * 2);
-      ctx.fill();
-      if(showVals && data[i] >= 0){
+      function angles(arr) {
+        const ang = Array(arr.length).fill(null);
+        for (let i = 1; i < arr.length - 1; i++) {
+          if (arr[i - 1] < 0 || arr[i] < 0 || arr[i + 1] < 0) {
+            ang[i] = null;
+            continue;
+          }
+          const ax = arr[i + 1] - arr[i],
+            ay = 1;
+          const bx = arr[i - 1] - arr[i],
+            by = -1;
+          const a = Math.atan2(ay, ax),
+            b = Math.atan2(by, bx);
+          let deg = (a - b) * 180 / Math.PI;
+          if (deg > 180) deg -= 360;
+          if (deg < -180) deg += 360;
+          ang[i] = deg.toFixed(1) + '°';
+        }
+        return ang;
+      }
+
+      function draw() {
+        const W = cv.width,
+          H = cv.height;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--bg');
+        ctx.fillRect(0, 0, W, H);
+
+        const P = {
+          l: 70,
+          r: 30,
+          t: 40,
+          b: 40
+        }, x0 = P.l, x1 = W - P.r, y0 = P.t, y1 = H - P.b;
+
+        ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--card');
+        ctx.fillRect(x0 - 10, y0 - 10, (x1 - x0) + 20, (y1 - y0) + 20);
+
+        ctx.strokeStyle = '#bbb';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const y = y0 + i * (y1 - y0) / 7;
+          ctx.moveTo(x0, y);
+          ctx.lineTo(x1, y);
+        }
+        ctx.stroke();
+
         ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
         ctx.font = '12px system-ui,Arial';
-        ctx.textAlign = 'left';
+        ctx.textAlign = 'right';
         ctx.textBaseline = 'middle';
-        ctx.fillText(data[i].toFixed(1) + ' cm', xx + 10, yy);
-      }
-    }
-    if(showAngles){
-      const A = angles(data);
-      ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
-      ctx.font = '12px system-ui,Arial';
-      ctx.textAlign = 'left';
-      ctx.textBaseline = 'middle';
-      for(let i = 1; i < 7; i++){
-        if(A[i]){
-          const xx = (data[i] >= 0) ? X(data[i]) + 18 : X(0) + 18;
-          const yy = Y(i);
-          ctx.fillText(A[i], xx, yy);
+        for (let i = 0; i < 8; i++) {
+          const y = y0 + i * (y1 - y0) / 7;
+          ctx.fillText(showLabels ? labels[i] : '', x0 - 12, y);
         }
-      }
-    }
-    ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
-    ctx.font = '16px system-ui,Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.fillText('Spinal Curve Mapping', (x0 + x1) / 2, 8);
-  }
 
-  function connectWS(){
-    if (ws) {
-      ws.close();
-    }
-    const ip = ipInput.value;
-    if (!ip) {
-      console.error("IP address is required to connect.");
-      setOnline(false);
-      return;
-    }
-    // Save IP to local storage for future visits
-    localStorage.setItem('esp32_ip', ip);
-    try {
-      const url = `ws://${ip}/ws`;
-      ws = new WebSocket(url);
-      ws.onopen = () => {
-        setOnline(true);
-        console.log("WebSocket connection established.");
-      };
-      ws.onclose = () => {
-        setOnline(false);
-        console.log("WebSocket connection closed.");
-        // Attempt to reconnect after a delay
-        setTimeout(connectWS, 3000);
-      };
-      ws.onerror = (error) => {
-        setOnline(false);
-        console.error("WebSocket error:", error);
-      };
-      ws.onmessage = ev => {
-        if (!running) return;
-        try {
-          const obj = JSON.parse(ev.data);
-          if (Array.isArray(obj.sensors) && obj.sensors.length === 8) {
-            data = obj.sensors.map(v => Number(v));
-            draw();
+        const valid = data.filter(v => v >= 0);
+        const min = valid.length ? Math.min(...valid, 0) : 0,
+          max = valid.length ? Math.max(...valid, 100) : 100;
+        const xMin = Math.max(0, Math.floor(min - 10)),
+          xMax = Math.ceil(max + 10);
+        const X = v => x0 + (v - xMin) * (x1 - x0) / ((xMax - xMin) || 1),
+          Y = i => y0 + i * (y1 - y0) / 7;
+
+        // curve
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = '#007bff';
+        ctx.beginPath();
+        for (let i = 0; i < 8; i++) {
+          const xx = (data[i] >= 0) ? X(data[i]) : X(0),
+            yy = Y(i);
+          if (i === 0) ctx.moveTo(xx, yy);
+          else {
+            const px = (data[i - 1] >= 0) ? X(data[i - 1]) : X(0),
+              py = Y(i - 1);
+            const mx = (px + xx) / 2;
+            ctx.quadraticCurveTo(px, py, mx, (py + yy) / 2);
+            ctx.quadraticCurveTo(mx, (py + yy) / 2, xx, yy);
           }
+        }
+        ctx.stroke();
+
+        for (let i = 0; i < 8; i++) {
+          const xx = (data[i] >= 0) ? X(data[i]) : X(0),
+            yy = Y(i);
+          ctx.fillStyle = (data[i] >= 0) ? '#dc3545' : '#999';
+          ctx.beginPath();
+          ctx.arc(xx, yy, 6, 0, Math.PI * 2);
+          ctx.fill();
+          if (showVals && data[i] >= 0) {
+            ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
+            ctx.font = '12px system-ui,Arial';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(data[i].toFixed(1) + ' cm', xx + 10, yy);
+          }
+        }
+        if (showAngles) {
+          const A = angles(data);
+          ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
+          ctx.font = '12px system-ui,Arial';
+          ctx.textAlign = 'left';
+          ctx.textBaseline = 'middle';
+          for (let i = 1; i < 7; i++) {
+            if (A[i]) {
+              const xx = (data[i] >= 0) ? X(data[i]) + 18 : X(0) + 18,
+                yy = Y(i);
+              ctx.fillText(A[i], xx, yy);
+            }
+          }
+        }
+        ctx.fillStyle = getComputedStyle(document.body).getPropertyValue('--text');
+        ctx.font = '16px system-ui,Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillText('Spinal Curve Mapping', (x0 + x1) / 2, 8);
+      }
+
+      function connectWS(ip) {
+        try {
+          const url = 'ws://' + ip + ':81';
+          ws = new WebSocket(url);
+          ws.onopen = () => setOnline(true);
+          ws.onclose = () => setOnline(false);
+          ws.onerror = () => setOnline(false);
+          ws.onmessage = ev => {
+            if (!running) return;
+            const obj = JSON.parse(ev.data);
+            if (Array.isArray(obj.sensors) && obj.sensors.length === 8) {
+              data = obj.sensors.map(v => Number(v));
+              draw();
+            }
+          };
         } catch (e) {
-          console.error("Failed to parse JSON message:", e);
+          setOnline(false);
+        }
+      }
+      
+      connectBtn.onclick = () => {
+        const ip = ipInput.value.trim();
+        if (ip.length > 0) {
+          connectWS(ip);
         }
       };
-    } catch (e) {
-      setOnline(false);
-      console.error("Failed to create WebSocket:", e);
-    }
-  }
 
-  // Event Listeners
-  connectBtn.onclick = connectWS;
-  startBtn.onclick = () => { running = true; };
-  stopBtn.onclick = () => { running = false; };
-  tValsBtn.onclick = () => { showVals = !showVals; draw(); };
-  tAngBtn.onclick = () => { showAngles = !showAngles; draw(); };
-  tLabBtn.onclick = () => { showLabels = !showLabels; draw(); };
-  exportBtn.onclick = () => {
-    const a = document.createElement('a');
-    a.download = 'backmap_' + new Date().toISOString().replace(/[:.]/g, '-') + '.png';
-    a.href = cv.toDataURL('image/png');
-    a.click();
-  };
-  modeBtn.onclick = () => {
-    document.body.classList.toggle('dark');
-    modeBtn.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
-    draw();
-  };
+      startBtn.onclick = () => {
+        running = true;
+      };
+      stopBtn.onclick = () => {
+        running = false;
+      };
+      tValsBtn.onclick = () => {
+        showVals = !showVals;
+        draw();
+      };
+      tAngBtn.onclick = () => {
+        showAngles = !showAngles;
+        draw();
+      };
+      tLabBtn.onclick = () => {
+        showLabels = !showLabels;
+        draw();
+      };
+      exportBtn.onclick = () => {
+        const a = document.createElement('a');
+        a.download = 'backmap_' + new Date().toISOString().replace(/[:.]/g, '-') + '.png';
+        a.href = cv.toDataURL('image/png');
+        a.click();
+      };
+      modeBtn.onclick = () => {
+        document.body.classList.toggle('dark');
+        modeBtn.textContent = document.body.classList.contains('dark') ? '☀️ Light Mode' : '🌙 Dark Mode';
+        draw();
+      };
 
-  startButton.onclick = () => {
-    landingPage.style.display = 'none';
-    appPage.style.display = 'block';
-    fitCanvas();
-    if (savedIp) {
-      connectWS();
-    } else {
-      setOnline(false);
-    }
-  };
-
-  // Initial setup
-  fitCanvas();
-  // Attempt to connect on load if an IP is saved
-  if (savedIp) {
-    // We don't connect automatically on the landing page, wait for the user to click
-  } else {
-    setOnline(false);
-  }
-})();
-</script>
+      fitCanvas();
+      draw();
+    })();
+  </script>
 </body>
 </html>
